@@ -1,7 +1,7 @@
 {
 	"name": "qd/mail",
 	"version":"1.0",
-	"type": "library",
+	"type": "package",
 	"description": "mail services to acces imap and zimbra server",
 	"keywords": ["mail","mua","imap","smtp","zimbra","soap"],
 	"homepage": "https://github.com/micoli",
