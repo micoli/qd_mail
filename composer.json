@@ -5,7 +5,7 @@
 	"description": "mail services to acces imap and zimbra server",
 	"keywords": ["mail","mua","imap","smtp","zimbra","soap"],
 	"homepage": "https://github.com/micoli",
-	"license": "BSD-3-Clause",
+	"license": "BSD-3-Clause" ,
 	"authors": [{
 		"name": "micoli",
 		"email": "olivier@micoli.org",
