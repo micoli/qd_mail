@@ -1,0 +1,40 @@
+{
+	"name": "qd/mail",
+	"version":"1.0",
+	"type": "library",
+	"description": "mail services to acces imap and zimbra server",
+	"keywords": ["mail","mua","imap","smtp","zimbra","soap"],
+	"homepage": "https://github.com/micoli",
+	"license": "BSD-3-Clause",
+	"authors": [{
+		"name": "micoli",
+		"email": "olivier@micoli.org",
+		"role": "Lead Developer"
+	}],
+	"require": {
+		"php" : ">=5.3",
+		"pclzip/pclzip" : "2.8.2",
+		"qd/utils":"0.8"
+	},
+	"require-dev": {
+		"phpunit/phpunit" : "~4.3|~5.0"
+	},
+	"repositories": [{
+		"aa":"aa typevcs git@github.com:micoli/qd_utils.git",
+		"type": "path",
+		"url": "../qd_utils/"
+	}],
+	"autoload": {
+		"psr-4": {
+			"qd\\": "src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"qd\\": "tests"
+		}
+	},
+	"scripts": {
+		"test": "phpunit"
+	}
+}
