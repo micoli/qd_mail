@@ -20,9 +20,10 @@
 		"phpunit/phpunit" : "~4.3|~5.0"
 	},
 	"repositories": [{
-		"aa":"aa typevcs git@github.com:micoli/qd_utils.git",
-		"type": "path",
-		"url": "../qd_utils/"
+		"type": "git",
+		"url":  "https://github.com/micoli/qd_utils.git",
+		"_type": "path",
+		"_url": "../qd_utils/"
 	}],
 	"autoload": {
 		"psr-4": {
