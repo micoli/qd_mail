@@ -2,7 +2,7 @@
 namespace qd\mail\mimedecoder;
 
 class mimeDecoderCalendar{
-	public static function decode($data,$charset,&$o,&$attachments){
+	public static function decode($data,$charset,&$o,&$attachments,$options=array()){
 		//$body= iconv(strtoupper($charset),'UTF-8',$data);
 		//return $body;
 		$data = quoted_printable_decode($data);// utf8_decode(imap_utf8($data)));

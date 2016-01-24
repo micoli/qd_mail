@@ -2,7 +2,7 @@
 namespace qd\mail\mimedecoder;
 
 class mimeDecoderPlain{
-	public static function decode($data,$charset,&$o,&$attachments){
+	public static function decode($data,$charset,&$o,&$attachments,$options=array()){
 		if($charset=='unknown'){
 			$charset=mb_detect_encoding($data);
 		}

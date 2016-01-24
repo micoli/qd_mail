@@ -3,10 +3,6 @@ namespace qd\services;
 use CEP\Interceptor;
 use qd\mail\mua\QDImap;
 
-/**
- * @redmine #11597 [TECH] Mise en place des interceptors
- */
-
 class svcMailboxImapZimbra extends svcMailboxImap{
 
 	public function init(){

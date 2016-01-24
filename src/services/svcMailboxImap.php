@@ -5,9 +5,6 @@ use \qd\mail\orm\MMG_MAIL_MESSAGE;
 use \CEP\Interceptor;
 use \Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @redmine #11640 Maquette V2 dans Cyrus
- */
 class svcMailboxImap {
 	var $imapProxy;
 	var $proxyClass		= 'ZIMBRA';
@@ -24,7 +21,7 @@ class svcMailboxImap {
 
 	public function __construct(){
 		//header('content-type: text/html; charset=utf-8');
-		QDImap::$svcImapClass=preg_replace('!^svc!','',get_class($this));
+		QDImap::$svcImapClass=preg_replace('!^svc!','',array_pop(explode('\\',get_class($this))));
 	}
 
 	public function init(){
@@ -360,7 +357,9 @@ class svcMailboxImap {
 			return array('error'=>true);
 		}
 
-		$res = $this->imapProxy->getMessageContent($message_no);
+		$res = $this->imapProxy->getMessageContent($message_no,array(
+			'no_safe_image'	=> akead('no_safe_image',$o,false)
+		));
 		$aAllAttachmentsPartNo = array(-1);
 		if(is_array($res['attachments'])){
 			foreach($res['attachments'] as &$f){
@@ -442,9 +441,9 @@ class svcMailboxImap {
 			}
 			$o['onlyView']=1;
 			if(akead('onlyView',$o,false)){
-				//$this->headerForView($filename,mb_strlen($data));
+				$this->headerForView($filename,mb_strlen($data));
 			}else{
-				//$this->headerForDownload($filename,mb_strlen($data));
+				$this->headerForDownload($filename,mb_strlen($data));
 			}
 			print $data;
 			die();

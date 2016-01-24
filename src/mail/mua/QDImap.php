@@ -603,7 +603,7 @@ class QDImap{
 		$p['bcc'			] = json_decode(akead('bcc'	,$o,array()),true);
 
 		//$p['attachmentBase'	] = $this->tmpAttachmentsPath;
-		$p['attachments'	] = json_decode(stripslashes(akead('attachments',$o,array())));
+		$p['attachments'	] = json_decode(stripslashes(akead('attachments',$o,array())),true);
 		return $p;
 	}
 

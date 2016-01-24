@@ -115,7 +115,6 @@ class ZimbraSoapClient extends \SoapClient{
 	}
 
 	public static function SoapVarArray($a){
-		//db(\xmlConvert::array2xml($a));die();
 		return new \SoapVar(xmlConvert::array2xml($a), XSD_ANYXML);
 	}
 

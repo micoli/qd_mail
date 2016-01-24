@@ -1,35 +1,46 @@
 <?php
 namespace qd\services;
 
+use \CEP\Interceptor;
+use \Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use qd\mail\mua\orm\MMG_MAIL_MESSAGE;
 use qd\mail\mua\senderConnector\mailSenderSwiftMailer;
 use qd\mail\mua\QDImap;
 
+
 class svcMailboxSmtp extends svcMailboxImap{
-	public function __construct(){
-		if(function_exists('xdebug_disable')) {
-			xdebug_disable();
-		}
+	var $dispatchKey	= 'qd.services.mua.mailbox_smtp';
 
-		\QDOrm::addConnection('extmailbox', new \QDPDO($GLOBALS['conf']['qddb']['connection'], $GLOBALS['conf']['qddb']['username'], $GLOBALS['conf']['qddb']['password']));
+	/**
+	 * @var \CEP\EventDispatcher
+	 **/
+	protected $dispatcher;
 
-		header('content-type: text/html; charset=utf-8');
+	public function attachDispatcher(EventDispatcherInterface $dispatcher){
+		$this->dispatcher = $dispatcher;
+	}
 
-		$this->imapProxy = QDImap::getInstance($GLOBALS['conf']['imapMailBox']['accounts'],'ZIMBRA');
-
-		$this->imapProxy->setCache($GLOBALS['conf']['imapMailBox']['tmp']);
-		$this->imapProxy->setDBCacheObject(new MMG_MAIL_MESSAGE());
+	protected function setAccount($account,$withCheck=false){
+		$this->init();
+		$this->dispatcher->dispatch($this->dispatchKey.'.setAccount.inpre',new \CEP\Event($this,$account));
+		$this->imapProxy->setAccount($account,$withCheck);
+		$this->dispatcher->dispatch($this->dispatchKey.'.setAccount.inpost',new \CEP\Event($this,$account));
 	}
 
 	/**
 	 *
 	 */
-	private function init(){
+	public function init(){
+		\QDOrm::addConnection('extmailbox', new \QDPDO($GLOBALS['conf']['qddb']['connection'], $GLOBALS['conf']['qddb']['username'], $GLOBALS['conf']['qddb']['password']));
+		$this->imapProxy = QDImap::getInstance($GLOBALS['conf']['imapMailBox']['accounts'],'ZIMBRA');
+
+		$this->imapProxy->setCache($GLOBALS['conf']['imapMailBox']['tmp']);
+		$this->imapProxy->setDBCacheObject(new MMG_MAIL_MESSAGE());
 		$this->tmpAttachmentsPath = $GLOBALS['conf']['imapMailBox']['tmp'].'/attachments';
 	}
 
 	public function pub_getSignatures($o){
-		$this->imapProxy->setAccount($o['account']);
+		$this->setAccount($o['account']);
 		$this->imapProxy->open();
 		if(!$this->imapProxy->isConnected()){
 			return array();
@@ -38,7 +49,7 @@ class svcMailboxSmtp extends svcMailboxImap{
 	}
 
 	public function pub_getIdentities($o){
-		$this->imapProxy->setAccount($o['account']);
+		$this->setAccount($o['account']);
 		$this->imapProxy->open();
 		if(!$this->imapProxy->isConnected()){
 			return array();
@@ -54,7 +65,6 @@ class svcMailboxSmtp extends svcMailboxImap{
 	 * http://localhost/extmailbox_local/proxy.php?exw_action=local.MailboxSmtpExt.sendMail&account=micoli%40ms&attachments=[%220cfd65d5-1f80-4b0c-8e29-28e7877ab41b-9-Des%20portails%20ferms%20%20l%27uniformit%22%2C%220cfd65d5-1f80-4b0c-8e29-28e7877ab41b-4-La%20cuisine%20contemporaine%20privilgie%20la%20transparence%22]&bcc=[]&body=%26nbsp%3B%20test%20de%20text%20ht%3Cspan%20style%3D%22background-color%3A%20rgb%28255%2C%20255%2C%20153%29%3B%22%3Eml%3Cb%3Edsdsd%3C%2Fb%3Edsds%3C%2Fspan%3Eds%20%3Ci%3Edsdsds%20%3C%2Fi%3E%3Cbr%3E%26nbsp%3Btest%20de%20text%20ht%3Cspan%20style%3D%22background-color%3A%20rgb%28255%2C%20255%2C%20153%29%3B%22%3Eml%3Cb%3Edsdsd%3C%2Fb%3Edsds%3C%2Fspan%3Eds%20%3Ci%3Edsdsds%26nbsp%3B%20%3C%2Fi%3Etest%20de%20text%20ht%3Cspan%20style%3D%22background-color%3A%20rgb%28255%2C%20255%2C%20153%29%3B%22%3Eml%3Cb%3Edsdsd%3C%2Fb%3Edsds%3C%2Fspan%3Eds%20%3Ci%3Edsdsds%3C%2Fi%3E&cc=[]&from=micoli%40mail.local&message_id=0cfd65d5-1f80-4b0c-8e29-28e7877ab41b&priority=medium&ref=&subject=test%20123&to=[{%22email%22%3A%22micoli%40mail.local%22%2C%22name%22%3A%22%22}]
 	 */
 	public function pub_sendMail($o){
-		$this->init();
 		/*
 		*'from','fromName'
 		*'to','cc','bcc'
@@ -78,7 +88,7 @@ class svcMailboxSmtp extends svcMailboxImap{
 
 		if($res['success']){
 			$sentFolder = $GLOBALS['conf']['imapMailBox']['accounts'][$o['account']]['sendFolder'];
-			$this->imapProxy->setAccount($o['account']);
+			$this->setAccount($o['account']);
 			$this->imapProxy->open($sentFolder);
 			$r = $this->imapProxy->append($sentFolder, $res['mailStream'], "\\Seen");
 		}
@@ -91,8 +101,7 @@ class svcMailboxSmtp extends svcMailboxImap{
 	 * @return multitype:boolean multitype:string  |multitype:boolean
 	 */
 	public function pub_uploadAttachment($o){
-		$this->init();
-		$this->imapProxy->setAccount($o['account']);
+		$this->setAccount($o['account']);
 		$renameDuplicates=false;
 		$success=true;
 		$arrErrors=array();
