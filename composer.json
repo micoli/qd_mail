@@ -1,6 +1,6 @@
 {
 	"name": "qd/mail",
-	"version":"1.0.2",
+	"version":"1.0.3",
 	"type": "package",
 	"description": "mail services to acces imap and zimbra server",
 	"keywords": ["mail","mua","imap","smtp","zimbra","soap"],
@@ -14,7 +14,7 @@
 	"require": {
 		"php" : ">=5.3",
 		"pclzip/pclzip" : "2.8.2",
-		"qd/utils":"0.8.1"
+		"qd/utils":"0.8.2"
 	},
 
 	"repositories": [{
